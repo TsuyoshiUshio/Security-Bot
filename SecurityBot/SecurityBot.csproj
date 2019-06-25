@@ -22,10 +22,15 @@
   <ItemGroup>
     <Folder Include="Decorator\" />
     <Folder Include="Command\" />
-    <Folder Include="Provider\Repository\GitHub\" />
-    <Folder Include="Provider\Repository\AzureDevOps\" />
-    <Folder Include="Provider\Scanner\Aqua\" />
-    <Folder Include="Provider\Scanner\SonarCloud\" />
-    <Folder Include="Provider\WorkItem\AzureDevOps\" />
+    <Folder Include="Model\" />
+    <Folder Include="Provider\AzureDevOps\Client\" />
+    <Folder Include="Provider\AzureDevOps\CI\" />
+    <Folder Include="Provider\AzureDevOps\WorkItem\" />
+    <Folder Include="Provider\AzureDevOps\Repository\" />
+    <Folder Include="Provider\GitHub\Client\" />
+    <Folder Include="Provider\GitHub\WebHook\" />
+    <Folder Include="Provider\GitHub\Repository\" />
+    <Folder Include="Provider\SonarCloud\Client\" />
+    <Folder Include="Provider\SonarCloud\Scanner\" />
   </ItemGroup>
 </Project>
