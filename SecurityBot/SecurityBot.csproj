@@ -20,11 +20,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Decorator\" />
     <Folder Include="Command\" />
-    <Folder Include="Model\" />
     <Folder Include="Provider\AzureDevOps\Client\" />
-    <Folder Include="Provider\AzureDevOps\CI\" />
     <Folder Include="Provider\AzureDevOps\WorkItem\" />
     <Folder Include="Provider\AzureDevOps\Repository\" />
     <Folder Include="Provider\GitHub\Client\" />

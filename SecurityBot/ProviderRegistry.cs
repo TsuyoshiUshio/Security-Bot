@@ -20,7 +20,7 @@ namespace SecurityBot
         public void Register(IWebJobsBuilder builder)
         {
             var name = typeof(ProviderRegistry).Assembly.GetName().Name; // Change this code if you want to search other projects.
-            IEnumerable<Type> providerStartup = GetReferencingAssemblies(name).SelectMany(p => p.GetExportedTypes())
+            IEnumerable<Type> providerStartup = AssemblyHelper.GetReferencingAssemblies(name).SelectMany(p => p.GetExportedTypes())
                 .Where(p => p.GetInterfaces().Contains(typeof(IProviderStartup)));
             foreach (var startup in providerStartup)
             {
@@ -29,18 +29,5 @@ namespace SecurityBot
                 method.Invoke(obj, new object[] {builder});
             }
         }
-
-        private static IEnumerable<Assembly> GetReferencingAssemblies(string assemblyName)
-        {
-            return DependencyContext.Default.RuntimeLibraries.Where(p => IsCandidateLibrary(p, assemblyName)).Select(
-                p => Assembly.Load(new AssemblyName(p.Name)));
-        }
-
-        private static bool IsCandidateLibrary(RuntimeLibrary library, string assemblyName)
-        {
-            return library.Name == assemblyName || library.Dependencies.Any(d => d.Name.StartsWith(assemblyName));
-        }
-
-
     }
 }

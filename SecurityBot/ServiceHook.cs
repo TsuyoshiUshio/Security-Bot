@@ -10,24 +10,61 @@ using Newtonsoft.Json;
 
 namespace SecurityBot
 {
-    public static class Function1
+    public class ServiceEndpoint
     {
-        [FunctionName("Function1")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+        [FunctionName("CIHook")]
+        public async Task<IActionResult> CIHook(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+        [OrchestrationClient]IDurableOrchestrationClient starter,
+        ILogger log)
+        {
+            string pullRequestId = req.Query["pullRequestId"];
+            string projectKey = req.Query["ProjectKey"];
+            string commitId = req.Query["commitId"];
+            log.LogInformation($"PullRequestId: {pullRequestId} ProjectKey: {projectKey}");
+
+            //var cIContext = new CIContext()
+            //{
+            //    PullRequestId = pullRequestId,
+            //    ProjectKey = projectKey,
+            //    CommitId = commitId
+            //};
+            // var instanceId = await starter.StartNewAsync(nameof(CreatePRReviewDecorator), cIContext);
+            // DurableOrchestrationStatus status = await starter.GetStatusAsync(instanceId, false, false);
+            // return (ActionResult)new OkObjectResult(status);
+            return (ActionResult)new OkObjectResult("hello");
+            ;
+        }
+
+        [FunctionName("GitHubPRCommentHook")]
+        public async Task<IActionResult> GitHubPRCommentHook(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
+            HttpRequest req,
+            [OrchestrationClient]IDurableOrchestrationClient starter,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            //string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            //log.LogInformation(requestBody);
+            //// Parse the request 
+            //var comment = JsonConvert.DeserializeObject<PRCommentCreated>(requestBody);
 
-            string name = req.Query["name"];
+            //// Start Orchestrator
+            //var commandName = comment.CommandName();
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
-
-            return name != null
-                ? (ActionResult)new OkObjectResult($"Hello, {name}")
-                : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
+            //if (!string.IsNullOrEmpty(commandName))
+            //{
+            //    string instanceId = await starter.StartNewAsync(nameof(CreateWorkItemCommand), comment);
+            //    log.LogInformation($"Started orchestration with ID = '{instanceId}'.");
+            //    DurableOrchestrationStatus status = await starter.GetStatusAsync(instanceId, false, false);
+            //    return (ActionResult)new OkObjectResult(status);
+            //}
+            //else
+            //{
+            //    var status = new DurableOrchestrationStatus();
+            //    status.RuntimeStatus = OrchestrationRuntimeStatus.Completed;
+            //    return (ActionResult)new OkObjectResult(status);
+            //}
+            return (ActionResult)new OkObjectResult("hello");
         }
     }
 }
