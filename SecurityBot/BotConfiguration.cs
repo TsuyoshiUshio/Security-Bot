@@ -20,26 +20,26 @@ namespace SecurityBot
         /// Type of the repository provider. 
         /// GitHub, AzureDevOps etc.
         /// </summary>
-        public static string RepositoryProvider { get; }
+        public static string RepositoryProvider { get; internal set; }
 
         /// <summary>
         /// Type of the WorkItem provider.
         /// AzureDevOps, GitHub etc.
         /// </summary>
-        public static string WorkItemProvider { get; }
+        public static string WorkItemProvider { get; internal set; }
 
         /// <summary>
         /// Provider for CI. Currently AzureDevOps by default.
         /// You don't need to configure this.
         /// </summary>
-        public static string CiProvider { get; }
+        public static string CiProvider { get; internal set; }
     
 
         /// <summary>
         /// type of Scanner Providers
         /// SonarCloud, Aquq etc.
         /// </summary>
-        public static IEnumerable<string> ScannerProviders { get; }
+        public static IEnumerable<string> ScannerProviders { get; internal set; }
 
 
         static BotConfiguration()

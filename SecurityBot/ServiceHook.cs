@@ -7,6 +7,8 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SecurityBot.Decorator;
+using SecurityBot.Model;
 
 namespace SecurityBot
 {
@@ -18,17 +20,9 @@ namespace SecurityBot
         [OrchestrationClient]IDurableOrchestrationClient starter,
         ILogger log)
         {
-            string pullRequestId = req.Query["pullRequestId"];
-            string projectKey = req.Query["ProjectKey"];
-            string commitId = req.Query["commitId"];
-            log.LogInformation($"PullRequestId: {pullRequestId} ProjectKey: {projectKey}");
+            var context = new DecoratorContext();
+            new DecoratorRegistry().GetDecorator().Decorate(context, req);
 
-            //var cIContext = new CIContext()
-            //{
-            //    PullRequestId = pullRequestId,
-            //    ProjectKey = projectKey,
-            //    CommitId = commitId
-            //};
             // var instanceId = await starter.StartNewAsync(nameof(CreatePRReviewDecorator), cIContext);
             // DurableOrchestrationStatus status = await starter.GetStatusAsync(instanceId, false, false);
             // return (ActionResult)new OkObjectResult(status);

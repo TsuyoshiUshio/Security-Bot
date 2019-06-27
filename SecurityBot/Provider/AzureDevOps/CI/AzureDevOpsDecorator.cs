@@ -13,8 +13,10 @@ namespace SecurityBot.Provider.AzureDevOps.CI
         {
             string pullRequestId = request.Query["pullRequestId"];
             string commitId = request.Query["commitId"];
+            string pullRequestUrl = request.Query["pullRequestUrl"];
             context.PullRequestId = pullRequestId;
             context.CommitId = commitId;
+            context.Url = new Uri(pullRequestUrl);
         }
     }
 }

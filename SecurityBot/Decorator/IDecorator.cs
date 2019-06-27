@@ -19,7 +19,7 @@ namespace SecurityBot.Decorator
         void Update(DecoratorContext context, HttpRequest request);
 
         /// <summary>
-        /// Recursively apply Update method
+        /// Recursively apply Update method. The Context object will be updated.
         /// </summary>
         /// <param name="context">DecoratorContext</param>
         /// <param name="request">HttpRequest</param>

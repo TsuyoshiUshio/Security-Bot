@@ -11,14 +11,16 @@ using Xunit;
 
 namespace SecurityBot.Test.Decorator
 {
+   
     public class DecoratorRegistryTest
     {
 
         [Fact]
         public void RegisterDecoratorNormalCase()
         {
-            Environment.SetEnvironmentVariable(BotConfiguration.CiProviderSetting, "Foo", EnvironmentVariableTarget.Process);
-            Environment.SetEnvironmentVariable(BotConfiguration.ScannerProviderSetting, "Bar,Buz", EnvironmentVariableTarget.Process);
+            Environment.SetEnvironmentVariable(BotConfiguration.ScannerProviderSetting, "Bar"); // mandatory settings. It is overridden.
+            BotConfiguration.CiProvider = "Foo";
+            BotConfiguration.ScannerProviders = new List<string>() {"Bar", "Buz"};
             var registry = new DecoratorRegistry();
             var decorator = registry.GetDecorator();
             var context = new DecoratorContext();
@@ -29,6 +31,22 @@ namespace SecurityBot.Test.Decorator
             Assert.Equal("BuzValue", context.Tag.GetValueOrDefault("Buz"));
 
         }
+
+        [Fact]
+        public void RegisterScannerDecoratorNormalCase()
+        {
+            Environment.SetEnvironmentVariable(BotConfiguration.ScannerProviderSetting, "Bar"); // mandatory settings. It is overridden.
+            BotConfiguration.ScannerProviders = new List<string>() {"Bar", "Buz"};
+            var registry = new DecoratorRegistry();
+            var decorator = registry.GetScannerDecorator();
+            var context = new DecoratorContext();
+            var request = new Mock<HttpRequest>().Object;
+            decorator.Decorate(context, request);
+            Assert.Equal("BarValue", context.Tag.GetValueOrDefault("Bar"));
+            Assert.Equal("BuzValue", context.Tag.GetValueOrDefault("Buz"));
+            Assert.Null(context.PullRequestId);
+        }
+
         public class FooDecorator : DecoratorBase
         {
             public override void Update(DecoratorContext context, HttpRequest request)
