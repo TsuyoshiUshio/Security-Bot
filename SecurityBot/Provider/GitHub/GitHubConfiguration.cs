@@ -12,6 +12,8 @@ namespace SecurityBot.Provider.GitHub
         internal const string GitHubPatSetting = "GitHubPAT";
         internal const string GitHubOwnerSetting = "GitHubOwner";
 
+        internal const string GitHubRepositoryNameSetting = "GitHubRepositoryName"; // TODO this line will be removed.
+
         /// <summary>
         /// GitHub Personal Access Token
         /// </summary>
@@ -23,10 +25,19 @@ namespace SecurityBot.Provider.GitHub
         /// </summary>
         public static string Owner { get; set; }
 
+
+        public static string Name { get; set; } // TODO this line will be removed.
+
+        /// <summary>
+        /// ProviderName
+        /// </summary>
+        public const string ProviderName = "GitHub";
+
         static GitHubConfiguration()
         {
             Pat = Environment.GetEnvironmentVariable(GitHubPatSetting);
             Owner = Environment.GetEnvironmentVariable(GitHubOwnerSetting);
+            Name = Environment.GetEnvironmentVariable(GitHubRepositoryNameSetting); // TODO this line will be removed.
         }
     }
 }

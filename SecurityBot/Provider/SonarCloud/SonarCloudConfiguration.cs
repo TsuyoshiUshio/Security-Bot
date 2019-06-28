@@ -16,6 +16,16 @@ namespace SecurityBot.Provider.SonarCloud
         /// </summary>
         public static string Pat { get; }
 
+        /// <summary>
+        /// Provider Name
+        /// </summary>
+        public const string ProviderName = "SonarCloud";
+
+        /// <summary>
+        /// Key of the ProjectKey value of the DecoratorContext's Tag
+        /// </summary>
+        public const string ProjectKey = "ProjectKey";
+
         static SonarCloudConfiguration()
         {
             Pat = Environment.GetEnvironmentVariable(SonarCloudPatSetting);

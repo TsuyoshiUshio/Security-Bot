@@ -9,11 +9,10 @@ namespace SecurityBot.Provider.SonarCloud.CI
 {
     public class SonarCloudDecorator : DecoratorBase
     {
-        public const string ProjectKey = "ProjectKey";
         public override void Update(DecoratorContext context, HttpRequest request)
         {
-            string projectKey = request.Query[ProjectKey];
-            context.AddTag(ProjectKey, projectKey);
+            string projectKey = request.Query[SonarCloudConfiguration.ProjectKey];
+            context.AddTag(SonarCloudConfiguration.ProjectKey, projectKey);
         }
     }
 }

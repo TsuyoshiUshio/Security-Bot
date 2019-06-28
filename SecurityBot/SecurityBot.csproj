@@ -27,7 +27,6 @@
     <Folder Include="Provider\GitHub\Client\" />
     <Folder Include="Provider\GitHub\WebHook\" />
     <Folder Include="Provider\GitHub\Repository\" />
-    <Folder Include="Provider\SonarCloud\Client\" />
     <Folder Include="Provider\SonarCloud\Scanner\" />
   </ItemGroup>
 </Project>

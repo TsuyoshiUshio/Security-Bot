@@ -11,14 +11,13 @@ using Xunit;
 
 namespace SecurityBot.Test.Decorator
 {
-   
+    [Collection("ConfigurationTest")]
     public class DecoratorRegistryTest
     {
 
         [Fact]
         public void RegisterDecoratorNormalCase()
         {
-            Environment.SetEnvironmentVariable(BotConfiguration.ScannerProviderSetting, "Bar"); // mandatory settings. It is overridden.
             BotConfiguration.CiProvider = "Foo";
             BotConfiguration.ScannerProviders = new List<string>() {"Bar", "Buz"};
             var registry = new DecoratorRegistry();
@@ -35,7 +34,6 @@ namespace SecurityBot.Test.Decorator
         [Fact]
         public void RegisterScannerDecoratorNormalCase()
         {
-            Environment.SetEnvironmentVariable(BotConfiguration.ScannerProviderSetting, "Bar"); // mandatory settings. It is overridden.
             BotConfiguration.ScannerProviders = new List<string>() {"Bar", "Buz"};
             var registry = new DecoratorRegistry();
             var decorator = registry.GetScannerDecorator();

@@ -49,14 +49,8 @@ namespace SecurityBot
             CiProvider = Environment.GetEnvironmentVariable(CiProviderSetting) ?? "AzureDevOps";
 
             var scannerProviderItems = Environment.GetEnvironmentVariable(ScannerProviderSetting)?.Split(',');
-            if (scannerProviderItems == null)
-            {
-                throw new ArgumentException(
-                    $"ScannerProvider can not be null. Please double check local.settings.json or AppSettings");
-            }
-
-            ScannerProviders = scannerProviderItems.ToList();
- 
+            if (scannerProviderItems != null)
+                ScannerProviders = scannerProviderItems.ToList();
         }
     }
 }
