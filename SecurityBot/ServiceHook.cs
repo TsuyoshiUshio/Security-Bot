@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -14,6 +15,13 @@ namespace SecurityBot
 {
     public class ServiceEndpoint
     {
+
+        private ICommandHookParser _commandHookParser;
+
+        public ServiceEndpoint(ICommandHookParser commandHookParser)
+        {
+            _commandHookParser = commandHookParser;
+        }
         [FunctionName("CIHook")]
         public async Task<IActionResult> CIHook(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
@@ -23,11 +31,9 @@ namespace SecurityBot
             var context = new DecoratorContext();
             new DecoratorRegistry().GetDecorator().Decorate(context, req);
 
-            // var instanceId = await starter.StartNewAsync(nameof(CreatePRReviewDecorator), cIContext);
-            // DurableOrchestrationStatus status = await starter.GetStatusAsync(instanceId, false, false);
-            // return (ActionResult)new OkObjectResult(status);
-            return (ActionResult)new OkObjectResult("hello");
-            ;
+            var instanceId = await starter.StartNewAsync(nameof(DecorationOrchestrator), context);
+            DurableOrchestrationStatus status = await starter.GetStatusAsync(instanceId, false, false);
+            return (ActionResult)new OkObjectResult(status);
         }
 
         [FunctionName("GitHubPRCommentHook")]
@@ -37,28 +43,16 @@ namespace SecurityBot
             [OrchestrationClient]IDurableOrchestrationClient starter,
             ILogger log)
         {
-            //string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            //log.LogInformation(requestBody);
-            //// Parse the request 
-            //var comment = JsonConvert.DeserializeObject<PRCommentCreated>(requestBody);
+            // Call Repository Provider with Filter implementation of command. Filter will returned CommentHook Object
+            // Return that match the name of the Repository Provider + Filter. Which implement ICommentHookFilter
+            // if the CommentHook is not null, call orchestrator.
+            var commandContext = _commandHookParser.Parse(req);
+            if (commandContext != null)
+            {
+                // Start orchestrator
+            }
 
-            //// Start Orchestrator
-            //var commandName = comment.CommandName();
-
-            //if (!string.IsNullOrEmpty(commandName))
-            //{
-            //    string instanceId = await starter.StartNewAsync(nameof(CreateWorkItemCommand), comment);
-            //    log.LogInformation($"Started orchestration with ID = '{instanceId}'.");
-            //    DurableOrchestrationStatus status = await starter.GetStatusAsync(instanceId, false, false);
-            //    return (ActionResult)new OkObjectResult(status);
-            //}
-            //else
-            //{
-            //    var status = new DurableOrchestrationStatus();
-            //    status.RuntimeStatus = OrchestrationRuntimeStatus.Completed;
-            //    return (ActionResult)new OkObjectResult(status);
-            //}
-            return (ActionResult)new OkObjectResult("hello");
+            return (ActionResult)new OkObjectResult("Done");
         }
     }
 }

@@ -20,7 +20,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Command\" />
     <Folder Include="Provider\AzureDevOps\Client\" />
     <Folder Include="Provider\AzureDevOps\WorkItem\" />
     <Folder Include="Provider\AzureDevOps\Repository\" />

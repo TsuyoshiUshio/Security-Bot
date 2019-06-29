@@ -12,7 +12,8 @@ namespace SecurityBot
     {
         public void Configure(IWebJobsBuilder builder)
         {
-            Console.WriteLine("****Hello");
+            new ProviderRegistry().Register(builder);
+            new CommandHookParserRegistry().Register(builder);
         }
     }
 }
