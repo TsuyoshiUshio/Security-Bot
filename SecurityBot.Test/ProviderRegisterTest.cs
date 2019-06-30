@@ -15,6 +15,12 @@ namespace SecurityBot.Test
             var stub = new WebJobsBuilderStub();
             
             var registry = new ProviderRegistry();
+            var selectedProvider = new List<string>
+            {
+                nameof(SampleProviderStartup)
+            };
+            registry.SelectedStartup = selectedProvider;
+
             registry.Register(stub);
             var provider = stub.Services.BuildServiceProvider();
             var hello = provider.GetService<IHello>();

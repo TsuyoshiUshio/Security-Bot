@@ -25,7 +25,7 @@ namespace SecurityBot.Provider.SonarCloud.Activity
 
         private const string ProviderSection = "_" + SonarCloudConfiguration.ProviderName;
 
-        [FunctionName(nameof(SonarCloudDecorationOrchestrator) + ProviderSection + "_GetIssues")]
+        [FunctionName(nameof(DecorationOrchestrator) + ProviderSection + "_GetIssues")]
         public async Task<IEnumerable<SecurityBot.Model.Issue>> GetIssuesAsync(
             [ActivityTrigger] IDurableActivityContext context,
             ILogger logger)

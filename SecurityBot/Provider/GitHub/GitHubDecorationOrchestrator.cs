@@ -46,6 +46,7 @@ namespace SecurityBot.Provider.GitHub
                 {
                     IssueId = commentContext.Issue.Id,
                     CommentId = result.Id.ToString(),
+                    ScanProvider = commentContext.ScanProvider,
                     Tag = commentContext.DecoratorContext.Tag
                 };
             }

@@ -13,6 +13,16 @@ namespace SecurityBot
     /// </summary>
     public class ProviderRegistry
     {
+
+        /// <summary>
+        /// Select specific Startup class. Mainly for testing purpose.
+        /// </summary>
+        public List<string> SelectedStartup { get; set; }
+
+        public ProviderRegistry()
+        {
+            SelectedStartup = new List<string>();
+        }
         /// <summary>
         /// Register Providers and invoke Configure method with the builder parameter.
         /// </summary>
@@ -22,7 +32,12 @@ namespace SecurityBot
             var name = typeof(ProviderRegistry).Assembly.GetName().Name; // Change this code if you want to search other projects.
             IEnumerable<Type> providerStartup = AssemblyHelper.GetReferencingAssemblies(name).SelectMany(p => p.GetExportedTypes())
                 .Where(p => p.GetInterfaces().Contains(typeof(IProviderStartup)));
-            foreach (var startup in providerStartup)
+            // suppress registering 
+            IEnumerable<Type> filteredProviderStartup = (SelectedStartup.Count == 0)
+                ? providerStartup
+                : providerStartup.Where(p => SelectedStartup.Contains(p.Name));
+
+            foreach (var startup in filteredProviderStartup)
             {
                 var obj = Activator.CreateInstance(startup);
                 var method = startup.GetMethod("Configure");

@@ -8,6 +8,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SecurityBot.Command;
 using SecurityBot.Decorator;
 using SecurityBot.Model;
 
@@ -43,15 +44,11 @@ namespace SecurityBot
             [OrchestrationClient]IDurableOrchestrationClient starter,
             ILogger log)
         {
-            // Call Repository Provider with Filter implementation of command. Filter will returned CommentHook Object
-            // Return that match the name of the Repository Provider + Filter. Which implement ICommentHookFilter
-            // if the CommentHook is not null, call orchestrator.
             var commandContext = _commandHookParser.Parse(req);
             if (commandContext != null)
             {
-                // Start orchestrator
+                await starter.StartNewAsync(nameof(CommandOrchestrator), commandContext);
             }
-
             return (ActionResult)new OkObjectResult("Done");
         }
     }
