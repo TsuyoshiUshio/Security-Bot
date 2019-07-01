@@ -10,10 +10,10 @@ namespace SecurityBot
     public interface ICommandHookParser
     {
         /// <summary>
-        /// Parse Comment Hook HttpRequest to CommandHookContext
+        /// ParseAsync Comment Hook HttpRequest to CommandHookContext
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
-        Task<CommandHookContext> Parse(HttpRequest req);
+        Task<CommandHookContext> ParseAsync(HttpRequest req);
     }
 }

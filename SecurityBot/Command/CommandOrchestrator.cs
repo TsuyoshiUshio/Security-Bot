@@ -89,15 +89,16 @@ namespace SecurityBot.Command
                     new EntityId(nameof(PullRequestEntity), commandHookContext.PullRequestUri.GetEntityId()), "update",
                     pullRequestStateContext);
             }
-            // ToDo Entity is not created. Tell user to CI decoration first. 
-            await context.CallActivityAsync(nameof(CommandOrchestrator) + "_" + BotConfiguration.RepositoryProvider +
-                                            "_CreateSimpleReplyComment", new CreateSimpleReplyCommentContext()
+            else
             {
+                await context.CallActivityAsync(nameof(CommandOrchestrator) + "_" + BotConfiguration.RepositoryProvider +
+                                                "_CreateSimpleReplyComment", new CreateSimpleReplyCommentContext()
+                {
                     Body = "Security Decoration seems not finished. Wait until the PullRequest validation CI has done.",
                     InReplyTo = commandHookContext.ReplyToId,
                     PullRequestId = commandHookContext.PullRequestId
-            });
-            
+                });
+            }
         }
 
     }

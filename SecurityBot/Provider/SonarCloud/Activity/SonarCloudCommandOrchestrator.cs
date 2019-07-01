@@ -22,7 +22,7 @@ namespace SecurityBot.Provider.SonarCloud.Activity
 
 
         [FunctionName(nameof(CommandOrchestrator) + ProviderSection + "_GetIssue" )]
-        public async Task<Issue> GetIssueAsync(IDurableActivityContext context, ILogger logger)
+        public async Task<Issue> GetIssueAsync([ActivityTrigger] IDurableActivityContext context, ILogger logger)
         {
             var getIssueContext = context.GetInput<GetIssueContext>();
             var parentCreatedReviewComment = getIssueContext.CreatedReviewComment;

@@ -25,7 +25,10 @@ namespace SecurityBot.Provider.AzureDevOps.Activity
             {
                 Title =
                     $"{context.CreatedReviewComment.ScanProvider} Issue {BotConfiguration.RepositoryProvider} PR {context.PullRequestId}: {context.Issue.Message}",
-                Description = body
+                Description = body,
+                Project = AzureDevOpsConfiguration.Project,
+                Type = "Bug"
+
             };
             var workItem = await _workItemRepository.CreateWorkItem(workItemSource);
             return new WorkItem()

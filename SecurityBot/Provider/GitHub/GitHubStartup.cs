@@ -12,6 +12,7 @@ namespace SecurityBot.Provider.GitHub
         public void Configure(IWebJobsBuilder builder)
         {
             builder.Services.AddSingleton<IGitHubRepositoryContext>(GetGitHubRepositoryContext());
+            builder.Services.AddSingleton<IGitHubRepository, GitHubRepository>();
             builder.Services.AddSingleton<IGitHubClient>(GetGitHubClient());
         }
 

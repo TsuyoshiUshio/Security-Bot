@@ -9,6 +9,5 @@ namespace SecurityBot.Model
         public Issue Issue { get; set; }
         public DecoratorContext DecoratorContext { get; set; }
 
-        public string ScanProvider { get; set; }
     }
 }

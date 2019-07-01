@@ -13,7 +13,7 @@ namespace SecurityBot
     {
         internal const string RepositoryProviderSetting = "RepositoryProvider";
         internal const string WorkItemProviderSetting = "WorkItemProvider";
-        internal const string ScannerProviderSetting = "ScannerProvider";
+        internal const string ScannerProvidersSetting = "ScannerProviders";
         internal const string CiProviderSetting = "CiProvider";
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace SecurityBot
             WorkItemProvider = Environment.GetEnvironmentVariable(WorkItemProviderSetting);
             CiProvider = Environment.GetEnvironmentVariable(CiProviderSetting) ?? "AzureDevOps";
 
-            var scannerProviderItems = Environment.GetEnvironmentVariable(ScannerProviderSetting)?.Split(',');
+            var scannerProviderItems = Environment.GetEnvironmentVariable(ScannerProvidersSetting)?.Split(',');
             if (scannerProviderItems != null)
                 ScannerProviders = scannerProviderItems.ToList();
         }

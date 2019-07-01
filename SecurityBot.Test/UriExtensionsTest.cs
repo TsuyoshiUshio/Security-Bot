@@ -11,7 +11,7 @@ namespace SecurityBot.Test
         public void GetEntityId()
         {
             var uri = new Uri("https://github.com/foo/bar/pull/3");
-            Assert.Equal("//github.com/foo/bar/pull/3", uri.GetEntityId());
+            Assert.Equal("__github.com_foo_bar_pull_3", uri.GetEntityId());
         }
     }
 }

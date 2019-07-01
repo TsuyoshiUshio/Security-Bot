@@ -1,4 +1,5 @@
-﻿using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
+﻿using System;
+using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using System.Threading.Tasks;
 
@@ -20,13 +21,21 @@ namespace SecurityBot.Provider.AzureDevOps
         }
 
 
-        public Task<WorkItem> CreateWorkItem(WorkItemSource workItem)
+        public async Task<WorkItem> CreateWorkItem(WorkItemSource workItem)
         {
-            var project = workItem.Project;
-            var type = workItem.Type;
-            var document = workItem.ToJsonPatchDocument();
+            try
+            {
+                var project = workItem.Project;
+                var type = workItem.Type;
+                var document = workItem.ToJsonPatchDocument();
 
-            return client.CreateWorkItemAsync(document, project, type);
+                return await client.CreateWorkItemAsync(document, project, type);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
         }
     }
 }

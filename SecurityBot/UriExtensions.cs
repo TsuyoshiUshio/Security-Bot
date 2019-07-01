@@ -17,7 +17,7 @@ namespace SecurityBot
         {
             var path = uri.AbsoluteUri;
             var a =  path.Split(':');
-            return a[1];
+            return a[1].Replace("/", "_");
         }
     }
 }

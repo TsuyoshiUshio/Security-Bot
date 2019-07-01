@@ -13,6 +13,7 @@ namespace SecurityBot.Provider.GitHub
         Task<IReadOnlyList<PullRequestReviewComment>> GetPullRequestReviewComments(int pullRequestId);
         IGitHubRepositoryContext GitHubRepositoryContext { get; }
         Task<PullRequestReviewComment> CreatePullRequestReplyComment(int pullRequestNumber, string body, int inReplyTo);
+        Task<IssueComment> CreatePullRequestIssueComment(int pullRequestNumber, string body);
     }
 
 
@@ -28,10 +29,20 @@ namespace SecurityBot.Provider.GitHub
 
         public IGitHubRepositoryContext GitHubRepositoryContext => context;
 
-        public Task<PullRequestReviewComment> CreatePullRequestReviewComment(Comment comment)
+        public async Task<PullRequestReviewComment> CreatePullRequestReviewComment(Comment comment)
         {
-            var reviewComment = new PullRequestReviewCommentCreate(comment.Body, comment.CommitId, comment.Path, comment.Position);
-            return client.PullRequest.ReviewComment.Create(comment.RepositoryOnwer, comment.RepositoryName, int.Parse(comment.PullRequestId), reviewComment);
+            try
+            {
+                var reviewComment =
+                    new PullRequestReviewCommentCreate(comment.Body, comment.CommitId, comment.Path, comment.Position);
+                var a = await client.PullRequest.ReviewComment.Create(comment.RepositoryOnwer, comment.RepositoryName,
+                    int.Parse(comment.PullRequestId), reviewComment);
+                return a;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public Task<PullRequestReviewComment> CreatePullRequestReplyComment(int pullRequestNumber, string body, int inReplyTo)
@@ -48,6 +59,11 @@ namespace SecurityBot.Provider.GitHub
         public Task<IReadOnlyList<PullRequestReviewComment>> GetPullRequestReviewComments(int pullRequestId)
         {
             return client.PullRequest.ReviewComment.GetAll(context.Owner, context.Name, pullRequestId);
+        }
+
+        public Task<IssueComment> CreatePullRequestIssueComment(int pullRequestNumber, string body)
+        {
+            return client.Issue.Comment.Create(context.Owner, context.Name, pullRequestNumber, body);
         }
 
     }

@@ -44,7 +44,7 @@ namespace SecurityBot
             [OrchestrationClient]IDurableOrchestrationClient starter,
             ILogger log)
         {
-            var commandContext = _commandHookParser.Parse(req);
+            var commandContext = await _commandHookParser.ParseAsync(req);
             if (commandContext != null)
             {
                 await starter.StartNewAsync(nameof(CommandOrchestrator), commandContext);

@@ -26,12 +26,12 @@ namespace SecurityBot.Test
             // Multi threading test will share it. 
             Environment.SetEnvironmentVariable(BotConfiguration.RepositoryProviderSetting, expectedRepositoryProvider, EnvironmentVariableTarget.Process);
             Environment.SetEnvironmentVariable(BotConfiguration.WorkItemProviderSetting, expectedWorkItemProvider, EnvironmentVariableTarget.Process);
-            Environment.SetEnvironmentVariable(BotConfiguration.ScannerProviderSetting, inputScannerProviders, EnvironmentVariableTarget.Process);
+            Environment.SetEnvironmentVariable(BotConfiguration.ScannerProvidersSetting, inputScannerProviders, EnvironmentVariableTarget.Process);
 
             Assert.Equal(expectedRepositoryProvider, BotConfiguration.RepositoryProvider);
             Assert.Equal(expectedWorkItemProvider, BotConfiguration.WorkItemProvider );
 
-            Environment.SetEnvironmentVariable(BotConfiguration.ScannerProviderSetting, inputScannerProviders, EnvironmentVariableTarget.Process);
+            Environment.SetEnvironmentVariable(BotConfiguration.ScannerProvidersSetting, inputScannerProviders, EnvironmentVariableTarget.Process);
             Assert.Equal(expectedScannerProvider01, BotConfiguration.ScannerProviders.First());
             Assert.Equal(expectedScannerProvider02, BotConfiguration.ScannerProviders.Last());
 

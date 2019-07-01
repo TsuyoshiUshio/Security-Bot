@@ -23,7 +23,7 @@ namespace SecurityBot.Provider.GitHub
         }
 
         [FunctionName(nameof(DecorationOrchestrator) + ProviderSection + DecorationOrchestrator.SectionCreatePRReviewComment)]
-        public async Task<CreatedReviewComment> CreateCommentsAsync(IDurableActivityContext context, ILogger logger)
+        public async Task<CreatedReviewComment> CreateCommentsAsync([ActivityTrigger] IDurableActivityContext context, ILogger logger)
         {
 
             var commentContext = context.GetInput<CreateReviewCommentContext>();
@@ -46,14 +46,23 @@ namespace SecurityBot.Provider.GitHub
                 {
                     IssueId = commentContext.Issue.Id,
                     CommentId = result.Id.ToString(),
-                    ScanProvider = commentContext.ScanProvider,
+                    ScanProvider = commentContext.Issue.Provider,
                     Tag = commentContext.DecoratorContext.Tag
                 };
             }
             else
             {
-                // TODO there are issues that code agnostic one. Research how to do it . 
-                return null;
+                // GitHub, Pull Request Comment without Code is issue comment.
+                IssueComment result = await _repository.CreatePullRequestIssueComment(
+                    int.Parse(commentContext.DecoratorContext.PullRequestId),
+                    $"**{commentContext.Issue.Type}**\n> {commentContext.Issue.Message}\n See [details]({commentContext.Issue.Url})");
+                return new CreatedReviewComment()
+                {
+                    IssueId = commentContext.Issue.Id,
+                    CommentId = "_issue_" + result.Id.ToString(),
+                    ScanProvider = commentContext.Issue.Provider,
+                    Tag = commentContext.DecoratorContext.Tag
+                };
             }
         }
     }

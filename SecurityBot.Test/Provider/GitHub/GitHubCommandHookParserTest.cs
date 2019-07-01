@@ -39,7 +39,7 @@ namespace SecurityBot.Test.Provider.GitHub
             var httpMock = GetMockHttpRequest(inputBody);
 
             var parser = new GitHubCommandHookParser();
-            CommandHookContext context = await parser.Parse(httpMock.Object);
+            CommandHookContext context = await parser.ParseAsync(httpMock.Object);
 
             Assert.Equal(expectedCommandName, context.CommandName);
             Assert.Equal(expectedCommentId, context.Id);
@@ -74,7 +74,7 @@ namespace SecurityBot.Test.Provider.GitHub
             var httpMock = GetMockHttpRequest(inputBody);
 
             var parser = new GitHubCommandHookParser();
-            CommandHookContext context = await parser.Parse(httpMock.Object);
+            CommandHookContext context = await parser.ParseAsync(httpMock.Object);
 
             Assert.Null(context);
         }

@@ -21,7 +21,7 @@ namespace SecurityBot.Provider.GitHub
         /// </summary>
         /// <param name="req"></param>
         /// <returns>CommandHookContext object or null</returns>
-        public async Task<CommandHookContext> Parse(HttpRequest req)
+        public async Task<CommandHookContext> ParseAsync(HttpRequest req)
         {
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var comment = JsonConvert.DeserializeObject<PRCommentCreated>(requestBody);
