@@ -14,18 +14,13 @@
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="local.settings.json.example">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
     <None Update="local.settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Provider\AzureDevOps\Client\" />
-    <Folder Include="Provider\AzureDevOps\WorkItem\" />
-    <Folder Include="Provider\AzureDevOps\Repository\" />
-    <Folder Include="Provider\GitHub\Client\" />
-    <Folder Include="Provider\GitHub\WebHook\" />
-    <Folder Include="Provider\GitHub\Repository\" />
-    <Folder Include="Provider\SonarCloud\Scanner\" />
   </ItemGroup>
 </Project>
