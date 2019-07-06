@@ -29,6 +29,17 @@ namespace SecurityBot.Provider.GitHub
                 int.Parse(context.InReplyTo));
         }
 
+        [FunctionName(nameof(CommandOrchestrator) + ProviderSection +
+                      "_CreateIssueTransitionReplyComment")]
+        public Task CreateIssueTransitionReplyComment(
+            [ActivityTrigger] CreateIssueTransitionReplyCommentContext context)
+        {
+            var body = $"The issue marked as {CommandRouter.GetTransition(context.Command)}. For more [detail]({context.Issue.Url}).";
+
+            return _repository.CreatePullRequestReplyComment(int.Parse(context.PullRequestId), body,
+                int.Parse(context.InReplyTo));
+        }
+
 
         [FunctionName(nameof(CommandOrchestrator) + ProviderSection +
                       "_CreateSimpleReplyComment")]

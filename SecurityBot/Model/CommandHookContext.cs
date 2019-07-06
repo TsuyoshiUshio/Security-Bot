@@ -9,7 +9,7 @@ namespace SecurityBot.Model
         /// <summary>
         /// Command Name
         /// </summary>
-        public string CommandName { get; set; }
+        public string Command { get; set; }
         /// <summary>
         /// Pull Request Identifier
         /// </summary>

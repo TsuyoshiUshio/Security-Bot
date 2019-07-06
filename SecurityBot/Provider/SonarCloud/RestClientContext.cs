@@ -35,7 +35,7 @@ namespace SecurityBot.Provider.SonarCloud
 
         public async Task<T> PostAsync<K, T>(string requestUri, K payload)
         {
-            var data = JsonConvert.SerializeObject(payload);
+            var data = payload != null ? JsonConvert.SerializeObject(payload) : "";
             var content = new StringContent(data, Encoding.UTF8, "application/json");
             using (HttpResponseMessage response = await client.PostAsync(requestUri, content))
             {

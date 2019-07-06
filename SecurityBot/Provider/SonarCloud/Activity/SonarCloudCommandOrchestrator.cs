@@ -5,8 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SecurityBot.Command;
 using SecurityBot.Model;
+using SecurityBot.Provider.SonarCloud.Generated.DoTransition;
+using Issue = SecurityBot.Model.Issue;
 
 namespace SecurityBot.Provider.SonarCloud.Activity
 {
@@ -38,9 +41,18 @@ namespace SecurityBot.Provider.SonarCloud.Activity
                     Id = p.key,
                     Type = p.type,
                     Message = p.message,
-                    Url = $"https://sonarcloud.io/project/issues?id={projectKey}&open={p.key}&pullRequest={getIssueContext.PullRequestId}&resolved=false",
+                    Url = $"https://sonarcloud.io/project/issues?id={projectKey}&open={p.key}&pullRequest={getIssueContext.PullRequestId}",
                     Provider = SonarCloudConfiguration.ProviderName
             }).FirstOrDefault();
+        }
+
+        [FunctionName(nameof(CommandOrchestrator) + ProviderSection + "_TransitIssue")]
+        public async Task TransitIssue([ActivityTrigger] TransitIssueContext context, ILogger logger)
+        {
+            var parentCreatedReviewComment = context.CreatedReviewComment;
+            var result = await _repository.DoTransition(parentCreatedReviewComment.IssueId, context.Transition);
+            logger.LogInformation("command: *******");
+            logger.LogInformation(JsonConvert.SerializeObject(result));
         }
     }
 }

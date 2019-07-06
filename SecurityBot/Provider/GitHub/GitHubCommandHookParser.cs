@@ -33,7 +33,7 @@ namespace SecurityBot.Provider.GitHub
                 return new CommandHookContext()
                 {
                     Id = comment.comment?.id.ToString(),
-                    CommandName = CommandRouter.GetValueOrDefault(command),
+                    Command = command,
                     PullRequestUri = new Uri(comment.pull_request.html_url),
                     PullRequestId = comment.pull_request.number.ToString(),
                     ReplyToId = comment.comment?.in_reply_to_id.ToString(),

@@ -27,58 +27,22 @@ namespace SecurityBot.Command
             if (response.EntityExists)
             {
                 PullRequestStateContext pullRequestStateContext = response.EntityState;
-                switch (commandHookContext.CommandName)
+                switch (CommandRouter.GetValueOrDefault(commandHookContext.Command))
                 {
                     case CommandRouter.CreateWorkItemCommand:
                         // GetIssue that match Scan Provider. You can find the ScanProvider from response.
-                        CreatedReviewComment parentReviewComment =
-                            pullRequestStateContext.CreatedReviewComment.FirstOrDefault(p =>
-                                p.CommentId.ToString() == commandHookContext.ReplyToId);
-                        var issue = await context.CallActivityAsync<Issue>(
-                            nameof(CommandOrchestrator) + "_"+ parentReviewComment.ScanProvider + "_GetIssue",
-                            new GetIssueContext()
-                            {
-                                CreatedReviewComment = parentReviewComment,
-                                PullRequestId = pullRequestStateContext.PullRequestId
-                            });
-
-                        // Create WorkItem that match WorkItem Provider
-                        var workItem = await context.CallActivityAsync<WorkItem>(
-                            nameof(CommandOrchestrator) + "_" + BotConfiguration.WorkItemProvider + "_CreateWorkItem",
-                            new CreateWorkItemContext()
-                            {
-                                Issue = issue,
-                                CreatedReviewComment = parentReviewComment,
-                                PullRequestId = pullRequestStateContext.PullRequestId
-                            });
-
-                        // Create Comment that match Repository Provider
-                        await context.CallActivityAsync(
-                            nameof(CommandOrchestrator) + "_" + BotConfiguration.RepositoryProvider +
-                            "_CreateWorkItemReplyComment", new CreateWorkItemReplyCommentContext()
-                            {
-                                WorkItem = workItem,
-                                InReplyTo = parentReviewComment.CommentId,
-                                PullRequestId = pullRequestStateContext.PullRequestId
-                            });
-                        // Update the PullRequestStateContext
-                        pullRequestStateContext.Add(new CreatedWorkItem()
-                        {
-                            CommentId = parentReviewComment.CommentId,
-                        });
+                        await CreateWorkItem(context, pullRequestStateContext, commandHookContext);
 
                         break;
-                    case CommandRouter.SuppressFalsePositiveCommand:
-                        // GetIssue that match Scan Provider
-                        // Update the Issue state
-                        // Create Comment that match Repository Provider
+                    case CommandRouter.IssueTransitionCommand:
+                        await TransitIssueAsync(context, pullRequestStateContext, commandHookContext);
                         break;
                     default:
                         // Create Sorry Comment 
                         await context.CallActivityAsync(nameof(CommandOrchestrator) + "_" + BotConfiguration.RepositoryProvider +
                                                         "_CreateSimpleReplyComment", new CreateSimpleReplyCommentContext()
                         {
-                            Body = $"Command [{commandHookContext.CommandName}] hasn't been supported. Ask bot administrator.",
+                            Body = $"Command [{commandHookContext.Command}] hasn't been supported. Ask bot administrator.",
                             InReplyTo = commandHookContext.ReplyToId,
                             PullRequestId = commandHookContext.PullRequestId
                         });
@@ -101,6 +65,87 @@ namespace SecurityBot.Command
             }
         }
 
+        private async Task TransitIssueAsync(IDurableOrchestrationContext context,
+            PullRequestStateContext pullRequestStateContext,
+            CommandHookContext commandHookContext)
+        {
+            // GetIssue that match Scan Provider
+            CreatedReviewComment parentReviewComment =
+                GetParentReviewCommentAsync(pullRequestStateContext, commandHookContext);
+
+            var issue = await GetIssueAsync(context, pullRequestStateContext, parentReviewComment);
+
+            // Update the Issue state
+            await context.CallActivityAsync(nameof(CommandOrchestrator) + "_" + parentReviewComment.ScanProvider +
+                                            "_TransitIssue", new TransitIssueContext()
+            {
+                CreatedReviewComment = parentReviewComment,
+                Transition = CommandRouter.GetTransition(commandHookContext.Command)
+            });
+
+            // Create Comment that match Repository Provider
+
+            await context.CallActivityAsync(
+                nameof(CommandOrchestrator) + "_" + BotConfiguration.RepositoryProvider +
+                "_CreateIssueTransitionReplyComment", new CreateIssueTransitionReplyCommentContext()
+                {
+                    PullRequestId = commandHookContext.PullRequestId,
+                    InReplyTo = commandHookContext.ReplyToId,
+                    Command = commandHookContext.Command,
+                    Issue = issue
+                });
+        }
+
+        private async Task CreateWorkItem(IDurableOrchestrationContext context, PullRequestStateContext pullRequestStateContext,
+            CommandHookContext commandHookContext)
+        {
+            CreatedReviewComment parentReviewComment =
+                GetParentReviewCommentAsync(pullRequestStateContext, commandHookContext);
+
+            var issue = await GetIssueAsync(context, pullRequestStateContext, parentReviewComment);
+
+            // Create WorkItem that match WorkItem Provider
+            var workItem = await context.CallActivityAsync<WorkItem>(
+                nameof(CommandOrchestrator) + "_" + BotConfiguration.WorkItemProvider + "_CreateWorkItem",
+                new CreateWorkItemContext()
+                {
+                    Issue = issue,
+                    CreatedReviewComment = parentReviewComment,
+                    PullRequestId = pullRequestStateContext.PullRequestId
+                });
+
+            // Create Comment that match Repository Provider
+            await context.CallActivityAsync(
+                nameof(CommandOrchestrator) + "_" + BotConfiguration.RepositoryProvider +
+                "_CreateWorkItemReplyComment", new CreateWorkItemReplyCommentContext()
+                {
+                    WorkItem = workItem,
+                    InReplyTo = parentReviewComment.CommentId,
+                    PullRequestId = pullRequestStateContext.PullRequestId
+                });
+            // Update the PullRequestStateContext
+            pullRequestStateContext.Add(new CreatedWorkItem()
+            {
+                CommentId = parentReviewComment.CommentId,
+            });
+        }
+
+        private static async Task<Issue> GetIssueAsync(IDurableOrchestrationContext context, PullRequestStateContext pullRequestStateContext, CreatedReviewComment parentReviewComment)
+        {
+            return await context.CallActivityAsync<Issue>(
+                nameof(CommandOrchestrator) + "_" + parentReviewComment.ScanProvider + "_GetIssue",
+                new GetIssueContext()
+                {
+                    CreatedReviewComment = parentReviewComment,
+                    PullRequestId = pullRequestStateContext.PullRequestId
+                });
+        }
+
+        private CreatedReviewComment GetParentReviewCommentAsync(PullRequestStateContext pullRequestStateContext, CommandHookContext commandHookContext)
+        {
+            return pullRequestStateContext.CreatedReviewComment.FirstOrDefault(p =>
+                p.CommentId.ToString() == commandHookContext.ReplyToId);
+        }
     }
 
     public interface ICommandOrchestratorScannerActivity
@@ -114,6 +159,13 @@ namespace SecurityBot.Command
             Task<SecurityBot.Model.Issue> GetIssueAsync(
                 [ActivityTrigger] IDurableActivityContext context,
                 ILogger logger);
+        /// <summary>
+        /// Update State of Issue. 
+        /// </summary>
+        /// <param name="context"><see cref="TransitIssueContext"/></param>
+        /// <param name="logger"></param>
+        /// <returns></returns>
+        Task TransitIssue([ActivityTrigger] TransitIssueContext context, ILogger logger);
     }
 
     public interface ICommandOrchestratorWorkItemActivity
@@ -138,11 +190,20 @@ namespace SecurityBot.Command
             [ActivityTrigger] CreateWorkItemReplyCommentContext context);
 
         /// <summary>
+        /// CreateTransitionReplyComment for Scanner Issue
+        /// </summary>
+        /// <param name="context"><see cref="CreateIssueTransitionReplyCommentContext"/></param>
+        /// <returns></returns>
+        Task CreateIssueTransitionReplyComment(
+            [ActivityTrigger] CreateIssueTransitionReplyCommentContext context);
+
+        /// <summary>
         /// Create reply comment with body.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
         Task CreateSimpleReplyComment(
             [ActivityTrigger] CreateSimpleReplyCommentContext context);
+
     }
 }

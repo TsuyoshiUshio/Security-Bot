@@ -19,17 +19,23 @@ namespace SecurityBot.Command
             return Command.GetValueOrDefault(key);
         }
 
-        public const string CreateWorkItemComment = "/workItem";
+
+        public static string GetTransition(string key)
+        {
+            return key.Replace("/", "");
+        }
+
+        public const string CreateWorkItemComment = "/workitem";
         public const string CreateWorkItemCommand = "CreateWorkItemCommand";
-        public const string SuppressFalsePositiveComment = "/falsePositive";
-        public const string SuppressFalsePositiveCommand = "SuppressFalsePositiveCommand";
+        public const string SuppressFalsePositiveComment = "/falsepositive";
+        public const string IssueTransitionCommand = "IssueTransitionCommand";
 
         static CommandRouter()
         {
             Command = new Dictionary<string, string>()
             {
                 { CreateWorkItemComment, CreateWorkItemCommand },
-                { SuppressFalsePositiveComment, SuppressFalsePositiveCommand }
+                { SuppressFalsePositiveComment, IssueTransitionCommand }
             };
         }
     }

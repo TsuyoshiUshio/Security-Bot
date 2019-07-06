@@ -41,7 +41,7 @@ namespace SecurityBot.Test.Provider.GitHub
             var parser = new GitHubCommandHookParser();
             CommandHookContext context = await parser.ParseAsync(httpMock.Object);
 
-            Assert.Equal(expectedCommandName, context.CommandName);
+            Assert.Equal(expectedCommandName, context.Command);
             Assert.Equal(expectedCommentId, context.Id);
             Assert.Equal(expectedReplyToId, context.ReplyToId);
             Assert.Equal(expectedPullRequestUrl, context.PullRequestUri.AbsoluteUri);
