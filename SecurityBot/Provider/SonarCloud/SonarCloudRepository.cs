@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using SecurityBot.Command;
 using SecurityBot.Provider.SonarCloud.Generated.DoTransition;
 using SecurityBot.Provider.SonarCloud.Generated.SearchIssue;
 
@@ -34,9 +36,9 @@ namespace SecurityBot.Provider.SonarCloud
 
         public async Task<DoTransition> DoTransition(string issueKey, string transition)
         {
-            var result = await context.PostAsync<string, DoTransition>(
-                $"https://sonarcloud.io/api/issues/do_transition?issue={issueKey}&transition={transition}", null);
-            return result;
+            return await context.PostAsync<string, DoTransition>(
+                    $"https://sonarcloud.io/api/issues/do_transition?issue={issueKey}&transition={transition}", null);
         }
+    
     }
 }

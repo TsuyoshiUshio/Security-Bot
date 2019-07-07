@@ -35,7 +35,7 @@ namespace SecurityBot.Provider.SonarCloud.Activity
 
             var searchIssue = await _repository.GetIssues(getIssueContext.PullRequestId,
                 projectKey, parentCreatedReviewComment.IssueId);
-
+            
             return searchIssue.issues.Select(p => new Issue()
                 {
                     Id = p.key,
@@ -50,9 +50,11 @@ namespace SecurityBot.Provider.SonarCloud.Activity
         public async Task TransitIssue([ActivityTrigger] TransitIssueContext context, ILogger logger)
         {
             var parentCreatedReviewComment = context.CreatedReviewComment;
+            var issue = context.Issue;
             var result = await _repository.DoTransition(parentCreatedReviewComment.IssueId, context.Transition);
             logger.LogInformation("command: *******");
             logger.LogInformation(JsonConvert.SerializeObject(result));
+
         }
     }
 }

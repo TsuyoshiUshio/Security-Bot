@@ -76,24 +76,41 @@ namespace SecurityBot.Command
             var issue = await GetIssueAsync(context, pullRequestStateContext, parentReviewComment);
 
             // Update the Issue state
-            await context.CallActivityAsync(nameof(CommandOrchestrator) + "_" + parentReviewComment.ScanProvider +
-                                            "_TransitIssue", new TransitIssueContext()
+
+            if (issue.Status == "OPEN" || issue.Status == "REOPEN")
             {
-                CreatedReviewComment = parentReviewComment,
-                Transition = CommandRouter.GetTransition(commandHookContext.Command)
-            });
-
-            // Create Comment that match Repository Provider
-
-            await context.CallActivityAsync(
-                nameof(CommandOrchestrator) + "_" + BotConfiguration.RepositoryProvider +
-                "_CreateIssueTransitionReplyComment", new CreateIssueTransitionReplyCommentContext()
+                await context.CallActivityAsync(nameof(CommandOrchestrator) + "_" + parentReviewComment.ScanProvider +
+                                                "_TransitIssue", new TransitIssueContext()
                 {
-                    PullRequestId = commandHookContext.PullRequestId,
-                    InReplyTo = commandHookContext.ReplyToId,
-                    Command = commandHookContext.Command,
+                    CreatedReviewComment = parentReviewComment,
+                    Transition = CommandRouter.GetTransition(commandHookContext.Command),
                     Issue = issue
+
                 });
+
+                // Create Comment that match Repository Provider
+
+                await context.CallActivityAsync(
+                    nameof(CommandOrchestrator) + "_" + BotConfiguration.RepositoryProvider +
+                    "_CreateIssueTransitionReplyComment", new CreateIssueTransitionReplyCommentContext()
+                    {
+                        PullRequestId = commandHookContext.PullRequestId,
+                        InReplyTo = commandHookContext.ReplyToId,
+                        Command = commandHookContext.Command,
+                        Issue = issue
+                    });
+
+            }
+            else // Issue is already resolved or confirmed
+            {
+                await context.CallActivityAsync(nameof(CommandOrchestrator) + "_" + BotConfiguration.RepositoryProvider +
+                                                "_CreateSimpleReplyComment", new CreateSimpleReplyCommentContext()
+                {
+                    Body = "The issue is already resolved or confirmed.",
+                    InReplyTo = commandHookContext.ReplyToId,
+                    PullRequestId = commandHookContext.PullRequestId
+                });
+            }
         }
 
         private async Task CreateWorkItem(IDurableOrchestrationContext context, PullRequestStateContext pullRequestStateContext,

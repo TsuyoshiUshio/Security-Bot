@@ -23,6 +23,14 @@ namespace SecurityBot.Model
         public string Message { get; set; }
 
         /// <summary>
+        /// Status
+        /// OPEN, CONFIRMED, RESOLVED, REOPENED, CLOSED
+        /// I use the same state with Sonar Cube
+        /// <see cref="https://docs.sonarqube.org/latest/user-guide/issues/"/>
+        /// </summary>
+        public string Status { get; set; }
+
+        /// <summary>
         /// Repository path of code that has the issue
         /// </summary>
         public string Path { get; set; }
