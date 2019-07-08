@@ -99,7 +99,6 @@ namespace SecurityBot.Command
                         Command = commandHookContext.Command,
                         Issue = issue
                     });
-
             }
             else // Issue is already resolved or confirmed
             {
