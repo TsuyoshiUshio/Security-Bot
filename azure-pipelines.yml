@@ -42,7 +42,7 @@ steps:
   displayName: Test
   inputs:
     command: test
-    projects: '**/*[Tt]ests/*.csproj'
+    projects: '**/*[Tt]est/*.csproj'
     arguments: '--configuration $(BuildConfiguration)'
 
 - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
