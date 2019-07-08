@@ -13,11 +13,11 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: SonarSource.sonarcloud.14d9cde6-c1da-4d55-aa01-2965cd301255.SonarCloudPrepare@1
-  displayName: 'Prepare analysis on SonarCloud'
+- task: SonarCloudPrepare@1
   inputs:
     SonarCloud: 'SecurityBot'
-    organization: tsuyoshiushio-github
+    organization: 'tsuyoshiushio-github'
+    scannerMode: 'MSBuild'
     projectKey: 'SecurityBot'
     projectName: 'SecurityBot'
 
@@ -44,12 +44,11 @@ steps:
     command: test
     projects: '**/*[Tt]est/*.csproj'
     arguments: '--configuration $(BuildConfiguration)'
+- task: SonarCloudAnalyze@1
 
-- task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
-  displayName: 'Run Code Analysis'
-
-- task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
-  displayName: 'Publish Quality Gate Result'
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
 
 - task: DotNetCoreCLI@2
   displayName: Publish
@@ -57,8 +56,7 @@ steps:
     command: publish
     arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
 
-- task: SimondeLang.sonarcloud-buildbreaker.sonar-buildbreaker.sonarcloud-buildbreaker@1
-  displayName: 'Break build on quality gate failure'
+- task: sonarcloud-buildbreaker@1
   inputs:
     SonarCloud: 'SecurityBot'
 
