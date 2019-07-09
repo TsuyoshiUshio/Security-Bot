@@ -47,6 +47,7 @@ steps:
     command: test
     projects: '**/*[Tt]est/*.csproj'
     arguments: '--configuration $(BuildConfiguration)'
+    
 - task: SonarCloudAnalyze@1
 
 - task: SonarCloudPublish@1
