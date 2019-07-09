@@ -12,6 +12,8 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  buildPlatform: 'any cpu'
+  system.teamProject: SecurityBot
 
 steps:
 - task: SonarCloudPrepare@1
