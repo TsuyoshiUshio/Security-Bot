@@ -16,13 +16,13 @@ namespace SecurityBot
         /// <returns></returns>
         public static IEnumerable<Assembly> GetReferencingAssemblies(string assemblyName)
         {
-            var current = Assembly.GetAssembly(typeof(AssemblyHelper));
-            var result = new List<Assembly>() {current};
+           //  var current = Assembly.GetAssembly(typeof(AssemblyHelper));
+           //  var result = new List<Assembly>() {current};
             var runtimeLibraries =  DependencyContext.Default.RuntimeLibraries.Where(p => IsCandidateLibrary(p, assemblyName)).Select(
                 p => Assembly.Load(new AssemblyName(p.Name)));
-            result.Concat(runtimeLibraries);
-            
-            return result;
+            // result.Concat(runtimeLibraries);
+            return runtimeLibraries;
+            // return result;
         }
 
         private static bool IsCandidateLibrary(RuntimeLibrary library, string assemblyName)
