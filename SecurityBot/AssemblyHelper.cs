@@ -10,7 +10,7 @@ namespace SecurityBot
     public class AssemblyHelper
     {
         /// <summary>
-        /// Get Reference of Assemblies. It also includes the current assembly. 
+        /// Get Reference of Assemblies. It also includes the current assembly.
         /// </summary>
         /// <param name="assemblyName"></param>
         /// <returns></returns>
