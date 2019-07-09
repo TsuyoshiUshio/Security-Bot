@@ -25,8 +25,6 @@ namespace SecurityBot
 
             foreach (var commandParser in commandParsers)
             {
-                var value = nameof(commandParser);
-
                 if (commandParser.Name == (BotConfiguration.RepositoryProvider + "CommandHookParser"))
                 {
                     var obj = Activator.CreateInstance(commandParser);

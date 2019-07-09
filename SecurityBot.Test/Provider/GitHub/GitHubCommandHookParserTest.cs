@@ -20,7 +20,7 @@ namespace SecurityBot.Test.Provider.GitHub
             var expectedCommandName = CommandRouter.CreateWorkItemCommand;
             var expectedCommentId = "3";
 
-            var expectedBody = "/workItem";
+            var expectedBody = "/workitem";
             var expectedReplyToId = "4";
             var expectedPullRequestUrl = "https://github.com/foo/bar/pull/5";
             var expectedPullRequestId = "5";
@@ -41,7 +41,7 @@ namespace SecurityBot.Test.Provider.GitHub
             var parser = new GitHubCommandHookParser();
             CommandHookContext context = await parser.ParseAsync(httpMock.Object);
 
-            Assert.Equal(expectedCommandName, context.Command);
+            Assert.Equal(expectedCommandName, CommandRouter.GetValueOrDefault(context.Command));
             Assert.Equal(expectedCommentId, context.Id);
             Assert.Equal(expectedReplyToId, context.ReplyToId);
             Assert.Equal(expectedPullRequestUrl, context.PullRequestUri.AbsoluteUri);

@@ -8,5 +8,7 @@ namespace SecurityBot.Model
     {
         public CreatedReviewComment CreatedReviewComment { get; set; }
         public string Transition { get; set; }
+
+        public Issue Issue { get; set; }
     }
 }

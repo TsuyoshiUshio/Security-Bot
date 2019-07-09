@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using SecurityBot.Command;
 
 namespace SecurityBot.Provider.SonarCloud
 {
@@ -40,7 +42,8 @@ namespace SecurityBot.Provider.SonarCloud
             using (HttpResponseMessage response = await client.PostAsync(requestUri, content))
             {
                 string responseBody = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(responseBody);
+                    response.EnsureSuccessStatusCode();
+                    return JsonConvert.DeserializeObject<T>(responseBody);
             }
         }
     }

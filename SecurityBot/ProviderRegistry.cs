@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -30,8 +31,9 @@ namespace SecurityBot
         public void Register(IWebJobsBuilder builder)
         {
             var name = typeof(ProviderRegistry).Assembly.GetName().Name; // Change this code if you want to search other projects.
-            IEnumerable<Type> providerStartup = AssemblyHelper.GetReferencingAssemblies(name).SelectMany(p => p.GetExportedTypes())
-                .Where(p => p.GetInterfaces().Contains(typeof(IProviderStartup)));
+            IEnumerable<Type> some = AssemblyHelper.GetReferencingAssemblies(name)
+                .SelectMany(p => p.GetExportedTypes());
+            IEnumerable<Type> providerStartup =   some.Where(p => p.GetInterfaces().Contains(typeof(IProviderStartup)));
             // suppress registering 
             IEnumerable<Type> filteredProviderStartup = (SelectedStartup.Count == 0)
                 ? providerStartup
