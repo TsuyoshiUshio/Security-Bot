@@ -10,19 +10,23 @@ namespace SecurityBot
     public class AssemblyHelper
     {
         /// <summary>
-        /// GetReference
+        /// Get Reference of Assemblies. It also includes the current assembly. 
         /// </summary>
         /// <param name="assemblyName"></param>
         /// <returns></returns>
         public static IEnumerable<Assembly> GetReferencingAssemblies(string assemblyName)
         {
-           //  var current = Assembly.GetAssembly(typeof(AssemblyHelper));
-           //  var result = new List<Assembly>() {current};
-            var runtimeLibraries =  DependencyContext.Default.RuntimeLibraries.Where(p => IsCandidateLibrary(p, assemblyName)).Select(
+             var current = Assembly.GetAssembly(typeof(AssemblyHelper));
+             var currentAssemblies = new HashSet<Assembly>() {current};
+            var dependencyRuntimeLibraries =  DependencyContext.Default.RuntimeLibraries; // RuntimeLibraries doesn't include current libraries. 
+            
+            // Launched on Azure Functions Host: selectedRuntimeLibraries are empty. RootCause SecurityBot.Test is not the dependency of SecurityBot.
+            // Debug on Test: selectedRuntimeLibraries are SecurityBot and SecurityBot.Test SecurityBot is a dependency of SecurityBot.Test
+
+                var selectedDependencyRuntimeLibraries = dependencyRuntimeLibraries.Where(p => IsCandidateLibrary(p, assemblyName)).Select(
                 p => Assembly.Load(new AssemblyName(p.Name)));
-            // result.Concat(runtimeLibraries);
-            return runtimeLibraries;
-            // return result;
+             var result = currentAssemblies.Concat(selectedDependencyRuntimeLibraries);
+             return result;
         }
 
         private static bool IsCandidateLibrary(RuntimeLibrary library, string assemblyName)

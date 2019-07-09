@@ -41,6 +41,7 @@ namespace SecurityBot.Provider.SonarCloud.Activity
                     Id = p.key,
                     Type = p.type,
                     Message = p.message,
+                    Status = p.status,
                     Url = $"https://sonarcloud.io/project/issues?id={projectKey}&open={p.key}&pullRequest={getIssueContext.PullRequestId}",
                     Provider = SonarCloudConfiguration.ProviderName
             }).FirstOrDefault();
