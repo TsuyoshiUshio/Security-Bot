@@ -20,6 +20,9 @@ This is a bot for help to centerlize the analisys of Security scanning and opera
 * _Create WorkItem_
 
 ![Create WorkItem](images/SecurityBot02.jpg)
+
+* _Workitem Generated_
+
 ![WorkItem](images/SecurityBot03.jpg)
 
 # How to use 
