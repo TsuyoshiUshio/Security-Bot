@@ -165,10 +165,6 @@
                             "value": "[parameters('WorkItemProvider')]"
                         },
                         {
-                            "name": "WorkItemProvider",
-                            "value": "[parameters('WorkItemProvider')]"
-                        },
-                        {
                             "name": "GitHubPAT",
                             "value": "[parameters('GitHubPAT')]"
                         },
