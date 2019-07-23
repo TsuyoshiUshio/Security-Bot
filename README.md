@@ -9,6 +9,19 @@ This is a bot for help to centerlize the analisys of Security scanning and opera
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
+# Feature
+
+* _Pull Request Decoration_
+
+* _Suppress False Positive_
+
+![Suppress False Positive](images/SecurityBot01.jpg)
+
+* _Create WorkItem_
+
+![Create WorkItem](images/SecurityBot02.jpg)
+![WorkItem](images/SecurityBot03.jpg)
+
 # How to use 
 
 ## Security Bot configuration
