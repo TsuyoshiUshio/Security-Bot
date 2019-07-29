@@ -9,6 +9,12 @@ This is a bot for help to centerlize the analisys of Security scanning and opera
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
+# General Idea
+The general idea of the Security Bot is, through the Pull Request Validation, we can scan source code and find several issues by several 3rd party services. 
+This bot decorate pull request with all of these issues as a pull request comments. It centerlize the issue on a Pull Request so that Developer can handle oll 
+of issues in one place. Also, you can invoke a command just reply a comment. for example, suppress false-positive, or create work item. 
+It help developers and handle all of the security issue in one place. 
+
 # Feature
 
 * _Pull Request Decoration_
